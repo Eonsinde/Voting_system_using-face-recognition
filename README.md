@@ -1,4 +1,4 @@
-# facer
+# Voting
 ## Instructions
 * Download project to your PC
 * Unzip the downloaded folder
