@@ -17,24 +17,67 @@
     let username = document.getElementById("username_field").value;
     let password = document.getElementById("password_field").value;
 
-    localStorage.setItem("user", JSON.stringify({
-      username,
-      password
-    }));
+    const allowedUsers = ["nwankeze.david@cu.edu.ng", "registrar@cu.edu.ng", "vc@cu.edu.ng", "chancellor@cu.edu.ng"]
 
-    Swal.fire({
-      title: 'Enroll New Face',
-      text: "Please be ready in front of camera. You would need to make some face expressions to enroll. Do not worry, we do not save your data anywhere other than your browser storage.",
-      icon: 'info',
-      showCancelButton: true,
-      // confirmButtonColor: '#3085d6',
-      // cancelButtonColor: '#d33',
-      confirmButtonText: "I am Ready"
-    }).then((result) => {
-      if (result.value) {
-        location.href = '/enroll'
-      }
-    });
+    if (allowedUsers.includes(username)) {
+      localStorage.setItem("user", JSON.stringify({
+        username,
+        password
+      }));
+
+      // close login form
+      document.querySelector(".form-wrapper").remove();
+  
+      Swal.fire({
+        icon: 'success',
+        title: 'Authentication Success',
+        text: `Logged in as ${username}`,
+      }).then(result => {
+        // update auth display status
+        let authBarDiv = document.querySelector(".auth-bar");
+
+        if (authBarDiv) {
+          // update the inner HTML to reflect currently authenticated user
+          authBar.innerHTML = `
+            <p>Signed In as: ${username}</p>
+            <button class="logout-btn" onclick="handleLogout()"><i class="fa fa-sign-out-alt fa-2x"></i></button>
+          `;
+        } else {
+          // create auth bar and append it to header content div
+          let headerContentDiv = document.querySelector(".header-content");
+          let authBar = document.createElement("div");
+          authBar.className = "auth-bar";
+          authBar.innerHTML = `
+            <p>Signed In as: ${username}</p>
+            <button class="logout-btn" onclick="handleLogout()"><i class="fa fa-sign-out-alt fa-2x"></i></button>
+          `;
+          headerContentDiv.appendChild(authBar);
+        }
+
+        
+
+        // move on to enroll toast
+        Swal.fire({
+          title: 'Enroll New Face',
+          text: "Please be ready in front of camera. You would need to make some face expressions to enroll. Do not worry, we do not save your data anywhere other than your browser storage.",
+          icon: 'info',
+          showCancelButton: true,
+          // confirmButtonColor: '#3085d6',
+          // cancelButtonColor: '#d33',
+          confirmButtonText: "I am Ready"
+        }).then((result) => {
+          if (result.value) {
+            location.href = '/enroll'
+          }
+        });
+      });
+    } else { // when username is not valid
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Failed',
+        text: 'Account not valid or incorrect password!',
+      });
+    }
   }
 
 	function getCurrentFaceDetectionNet() {
@@ -79,8 +122,6 @@
         });
       } else {
         console.error("Not authenticated");
-
-        let video_container = document.querySelector("#vid_container");
         let candidates_container = document.querySelector(".candidates");
 
         let loginPage = document.createElement("div");

@@ -13,38 +13,41 @@
     db.defaults({ enrollment: [], attendance: [] })
       .write()
   </script>
-  <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.brighttheme.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
 
   <style>
-    .candidates {
-      position: fixed;
-      width: 300px;
-      top: 5px;
-      left: 5px;
-      z-index: 10000000;
+    .auth-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .candidates select {
-      padding: 15px 10px;
-      width: 300px;
-      border: 2px solid #999;
-      background-color: #f3f3f3;
-      font-weight: bold;
-      font-size: 18px;
-      outline: none;
+    .auth-bar > p {
+      font-size: 1.1rem;
+      color: white;
+      background: #222; 
+      padding: 10px 15px;
+      margin-right: 10px;
+    }
+
+    .auth-bar > button.logout-btn {
+      background-color: rgb(211, 31, 31);
+      color: white;
+      border: none;
+      padding: 0.5em;
       cursor: pointer;
-      border-radius: 10px;
+      outline: none;
     }
-
+    
     .form-wrapper {
       position: absolute;
-      z-index: 5000;
+      z-index: 12000000;
       height: 100%;
       width: 100%;
-      background: #27272a31;
+      background: #27272ab7;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -52,7 +55,7 @@
     }
 
     .login-form {
-      background: #0f172a;
+      background: #222;
       padding: 20px;
       width: 33%;
     }
@@ -79,7 +82,7 @@
 
     button.login-button {
       width: 100%;
-      background: #1e293b;
+      background: #313131;
       color: white;
       font-size: 1.2rem;
       padding: 12px 10px;
@@ -105,21 +108,23 @@
   
   <div id="container">
     <div id="vid_container">
-      <div class="candidates">
-        <select id="candidates">
-          <option value="Patrick">Patrick Odey</option>
-          <option value="Simon">Simon Ogar</option>
-          <option value="Emmanuel">Emmanuel Joseph</option>
-        </select>
-      </div>
+      <header class="candidates">
+        <div class="header-content">
+          <select id="candidates">
+            <option value="Patrick">Patrick Odey</option>
+            <option value="Simon">Simon Ogar</option>
+            <option value="Emmanuel">Emmanuel Joseph</option>
+          </select>
+        </div>
+      </header>
       <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
       <canvas id="overlay" />
     </div>
     <div id="gui_controls">
         <ul>
-          <li><a title="Enroll New User" href="javascript:enrollUser()"><i class="fa fa-user-plus fa-6x"></i></a></li>
-          <li><a title="Clear Attendance" href="javascript:clearAttendance()"><i class="fa fa-trash fa-6x"></i></a></li>
-          <li><a title="Clear Users" href="javascript:clearUsers()"><i class="fa fa-user-times fa-6x"></i></a></li>
+          <li><a class="action-btn" title="Enroll New User" href="javascript:enrollUser()"><i class="fa fa-user-plus fa-4x"></i></a></li>
+          <li><a class="action-btn" title="Clear Attendance" href="javascript:clearAttendance()"><i class="fa fa-trash fa-4x"></i></a></li>
+          <li><a class="action-btn" title="Clear Users" href="javascript:clearUsers()"><i class="fa fa-user-times fa-4x"></i></a></li>
         </ul>
     </div>
   </div> 
@@ -127,7 +132,36 @@
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.js"></script>
-  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <script type="text/javascript" src="record10.js"></script>
+  <script>
+    // check if user is authenticated
+    let headerContentDiv = document.querySelector(".header-content");
+    let authBar = document.createElement("div");
+    authBar.className = "auth-bar";
+    
+    let user = JSON.parse(localStorage.getItem("user"));
+    
+    if (localStorage.getItem("user")) {
+      authBar.innerHTML = `
+        <p>Signed In as: ${user.username}</p>
+        <button class="logout-btn" onclick="handleLogout()"><i class="fa fa-sign-out-alt fa-2x"></i></button>
+      `;
+    } else {
+      authBar.innerHTML = `<p>Not Authenticated</p>`;
+    }
+
+    headerContentDiv.appendChild(authBar);
+
+    const handleLogout = () => {
+      let authBarDiv = document.querySelector(".auth-bar");
+      let user = JSON.parse(localStorage.getItem("user"));
+
+      if (user) {
+        localStorage.removeItem("user");
+        authBar.innerHTML = `<p>Not Authenticated</p>`;
+      }
+    }
+  </script>
 </body>
 </html>
