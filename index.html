@@ -38,20 +38,82 @@
       cursor: pointer;
       border-radius: 10px;
     }
+
+    .form-wrapper {
+      position: absolute;
+      z-index: 5000;
+      height: 100%;
+      width: 100%;
+      background: #27272a31;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .login-form {
+      background: #0f172a;
+      padding: 20px;
+      width: 33%;
+    }
+
+    .form-sect {
+      margin-bottom: 15px;
+    }
+
+    .form-sect > h1 {
+      color: white;
+      text-align: center;
+    }
+
+    input.form-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 10px;
+      color: white;
+      background: transparent;
+      border: 1px white solid;
+      font-size: 1.2rem;
+      outline: none;
+    }
+
+    button.login-button {
+      width: 100%;
+      background: #1e293b;
+      color: white;
+      font-size: 1.2rem;
+      padding: 12px 10px;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+
+    button.login-button:hover {
+      background: #334155;
+    }
+
+    @media screen and (orientation: portrait) {
+      .login-form {
+        background: #0f172a;
+        padding: 20px;
+        width: 60%;
+      }
+    }
   </style>
 </head>
 <body>
+  
   <div id="container">
     <div id="vid_container">
-        <div class="candidates">
-          <select id="candidates">
-            <option value="Patrick">Patrick Odey</option>
-            <option value="Simon">Simon Ogar</option>
-            <option value="Emmanuel">Emmanuel Joseph</option>
-          </select>
-        </div>
-        <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
-        <canvas id="overlay" />
+      <div class="candidates">
+        <select id="candidates">
+          <option value="Patrick">Patrick Odey</option>
+          <option value="Simon">Simon Ogar</option>
+          <option value="Emmanuel">Emmanuel Joseph</option>
+        </select>
+      </div>
+      <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
+      <canvas id="overlay" />
     </div>
     <div id="gui_controls">
         <ul>
@@ -61,7 +123,7 @@
         </ul>
     </div>
   </div> 
-
+ 
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.js"></script>

@@ -13,7 +13,29 @@
 
   const selectedCandidate = document.getElementById('candidates').value
 
-  
+  function handleLogin() {
+    let username = document.getElementById("username_field").value;
+    let password = document.getElementById("password_field").value;
+
+    localStorage.setItem("user", JSON.stringify({
+      username,
+      password
+    }));
+
+    Swal.fire({
+      title: 'Enroll New Face',
+      text: "Please be ready in front of camera. You would need to make some face expressions to enroll. Do not worry, we do not save your data anywhere other than your browser storage.",
+      icon: 'info',
+      showCancelButton: true,
+      // confirmButtonColor: '#3085d6',
+      // cancelButtonColor: '#d33',
+      confirmButtonText: "I am Ready"
+    }).then((result) => {
+      if (result.value) {
+        location.href = '/enroll'
+      }
+    });
+  }
 
 	function getCurrentFaceDetectionNet() {
 	    return faceapi.nets.tinyFaceDetector
@@ -41,19 +63,45 @@
     }
 
     function enrollUser() {
-      Swal.fire({
-        title: 'Enroll New Face',
-        text: "Please be ready in front of camera. You would need to make some face expressions to enroll. Do not worry, we do not save your data anywhere other than your browser storage.",
-        icon: 'info',
-        showCancelButton: true,
-        // confirmButtonColor: '#3085d6',
-        // cancelButtonColor: '#d33',
-        confirmButtonText: "I am Ready"
-      }).then((result) => {
-        if (result.value) {
-          location.href = '/enroll'
-        }
-      })
+      if (localStorage.getItem("user")) {
+        Swal.fire({
+          title: 'Enroll New Face',
+          text: "Please be ready in front of camera. You would need to make some face expressions to enroll. Do not worry, we do not save your data anywhere other than your browser storage.",
+          icon: 'info',
+          showCancelButton: true,
+          // confirmButtonColor: '#3085d6',
+          // cancelButtonColor: '#d33',
+          confirmButtonText: "I am Ready"
+        }).then((result) => {
+          if (result.value) {
+            location.href = '/enroll'
+          }
+        });
+      } else {
+        console.error("Not authenticated");
+
+        let video_container = document.querySelector("#vid_container");
+        let candidates_container = document.querySelector(".candidates");
+
+        let loginPage = document.createElement("div");
+        loginPage.className = "form-wrapper";
+        loginPage.innerHTML = 
+        `<form action="" onsubmit="event.preventDefault();" class="login-form">
+          <div class="form-sect">
+            <h1>Attendance System | Login</h1>
+          </div>
+          <div class="form-sect">
+              <input type="text" id="username_field" class="form-input" placeholder="Username" />
+          </div>
+          <div class="form-sect">
+              <input type="password" id="password_field" class="form-input" placeholder="Password" />
+          </div>
+          <button class="login-button" onclick="handleLogin()">Submit</button>
+        </form>`;
+
+        // video_container.insertBefore(loginPage, candidates_container);
+        candidates_container.insertAdjacentElement("beforebegin", loginPage);
+      }
     }
 
     if (hasEnrollmentData()) {
